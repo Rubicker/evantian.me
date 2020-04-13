@@ -65,5 +65,8 @@
       "yarn format",
       "git add"
     ]
+  },
+  "resolutions": {
+    "image-webpack-loader/imagemin-pngquant": "5.0.1"
   }
 }
