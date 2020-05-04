@@ -1,5 +1,5 @@
 body {
-  --blue: #78a1f7;
+  --blue: #639cd9;
   background-color: var(--bg);
 }
 
@@ -10,8 +10,10 @@ body.light {
   --textTitle: #222;
   --textLink: #2a457d;
   --hr: hsla(0, 0%, 0%, 0.2);
-  --inlineCode-bg: rgba(255, 229, 100, 0.2);
-  --inlineCode-text: #1a1a1a;
+  /* --inlineCode-bg: #000;
+  --inlineCode-text: #aeefec; */
+  --inlineCode-bg: #ededed;
+  --inlineCode-text: #000;
 }
 
 body.dark {
@@ -20,28 +22,11 @@ body.dark {
   --bg: #282c35;
   --header: #ffffff;
   --textNormal: rgba(255, 255, 255, 0.88);
-  --textTitle: #ffffff;
+  --textTitle: #dfdbe6;
   --textLink: var(--blue);
   --hr: hsla(0, 0%, 100%, 0.2);
-  --inlineCode-bg: hsl(222, 14%, 25%);
-  --inlineCode-text: #e6e6e6;
-}
-
-/*
-  RTL layout
-*/
-body:lang(fa) article,
-body:lang(ar) article {
-  direction: rtl;
-}
-
-body:lang(fa) article pre,
-body:lang(ar) article pre,
-body:lang(fa) article .translations,
-body:lang(ar) article .translations,
-body:lang(fa) .language-text,
-body:lang(ar) .language-text {
-  direction: ltr;
+  --inlineCode-bg: #35495e;
+  --inlineCode-text: #dfdbe6;
 }
 
 /* Fixing parentheses issue in text */
@@ -83,7 +68,8 @@ code[class*='language-'],
 pre[class*='language-'] {
   color: white;
   background: none;
-  font-family: Consolas, Menlo, Monaco, source-code-pro, Courier New, monospace;
+  font-family: Fira Code, Consolas, Menlo, Monaco, source-code-pro, Courier New,
+    monospace;
   font-feature-settings: normal;
   text-align: left;
   white-space: pre;
@@ -93,9 +79,9 @@ pre[class*='language-'] {
   line-height: 1.5;
   margin-bottom: 0;
 
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
+  -moz-tab-size: 2;
+  -o-tab-size: 2;
+  tab-size: 2;
 
   -webkit-hyphens: none;
   -moz-hyphens: none;
@@ -187,7 +173,7 @@ pre[class*='language-'] ::selection {
 .token.tag,
 .token.operator,
 .token.keyword {
-  color: #78a1f7;
+  color: #639cd9;
 }
 
 .token.boolean {
@@ -214,7 +200,7 @@ pre[data-line] {
   margin-left: -1.3125rem;
   padding-right: 1em;
   padding-left: 1.25em;
-  border-left: 0.25em solid #78a1f7;
+  border-left: 0.25em solid #639cd9;
 }
 
 .gatsby-highlight {

@@ -85,7 +85,6 @@ module.exports = {
               `;
 
                 let html = edge.node.html;
-                // Hacky workaround for https://github.com/gaearon/overreacted.io/issues/65
                 html = html
                   .replace(/href="\//g, `href="${siteUrl}/`)
                   .replace(/src="\//g, `src="${siteUrl}/`)
@@ -138,7 +137,7 @@ module.exports = {
         short_name: `evantian`,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#78a1f7`,
+        theme_color: `#639cd9`,
         display: `minimal-ui`,
         icon: `src/assets/favicon.png`,
         theme_color_in_head: false,
