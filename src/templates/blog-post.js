@@ -32,7 +32,7 @@ class BlogPostTemplate extends React.Component {
 
     // Replace original links with translated when available.
     let html = post.html;
-    translatedLinks.forEach(link => {
+    translatedLinks.forEach((link) => {
       // jeez
       function escapeRegExp(str) {
         return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -113,7 +113,7 @@ class BlogPostTemplate extends React.Component {
           </div> */}
           <h3
             style={{
-              fontFamily: 'sans-serif',
+              fontFamily: 'Montserrat,sans-serif',
               marginTop: rhythm(0.25),
             }}
           >
@@ -121,7 +121,7 @@ class BlogPostTemplate extends React.Component {
               style={{
                 boxShadow: 'none',
                 textDecoration: 'none',
-                color: 'var(--blue)',
+                color: 'var(--textLink)',
               }}
               to={'/'}
             >

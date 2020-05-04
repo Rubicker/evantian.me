@@ -12,7 +12,8 @@ spoiler: useTS()?
 
 ```js
 // Here `isModalOpen` is infered to be Boolean,
-// and `toggleModal` is infered to a func that recieves a Boolean argument. 
+// and `toggleModal` is infered to a func 
+// that recieves a Boolean argument. 
 const [isModalOpen, toggleModal] = React.useState(false)
 ```
 
@@ -36,7 +37,7 @@ const inputEl = useRef<HTMLInputElement>(null)
 
 And also remember to check if inputEl is avaliable before using it, or React and Typescript will complain about it:
 
-```tsx
+```tsx{7}
 const PasswordInput = () => {
   const inputEl = useRef<HTMLInputElement>(null)
   const handleClick = () => {

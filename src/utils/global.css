@@ -4,7 +4,7 @@ body {
 }
 
 body.light {
-  --bg: #ffffff;
+  --bg: #ededed;
   --header: var(--blue);
   --textNormal: #222;
   --textTitle: #222;
@@ -12,8 +12,18 @@ body.light {
   --hr: hsla(0, 0%, 0%, 0.2);
   /* --inlineCode-bg: #000;
   --inlineCode-text: #aeefec; */
-  --inlineCode-bg: #ededed;
-  --inlineCode-text: #000;
+  --inlineCode-bg: #fff;
+  --inlineCode-text: #24292e;
+  --code-area-bg: #fff;
+  --code-area-color: rgb(54, 49, 61);
+  --line-highlight-bg: #fffbdd;
+  --line-highlight-flag: var(--blue);
+  --comment-color: #6a737d;
+  --string-color: #032f62;
+  --variable-color: #005cc5;
+  --keyword-color: #d73a49;
+  --classname-color: #6f42c1;
+  --tag-color: #22863a;
 }
 
 body.dark {
@@ -24,41 +34,19 @@ body.dark {
   --textNormal: rgba(255, 255, 255, 0.88);
   --textTitle: #dfdbe6;
   --textLink: var(--blue);
-  --hr: hsla(0, 0%, 100%, 0.2);
-  --inlineCode-bg: #35495e;
+  --hr: hsla(0, 4%, 5%, 0.2);
+  --inlineCode-bg: #1e1e1e;
   --inlineCode-text: #dfdbe6;
-}
-
-/* Fixing parentheses issue in text */
-body:lang(fa) .language-text,
-body:lang(ar) .language-text {
-  display: inline-block;
-}
-
-body:lang(fa) blockquote,
-body:lang(ar) blockquote {
-  border-left: unset;
-  border-right: 0.32813rem solid hsla(0, 0%, 0%, 0.9);
-  padding-right: 1.42188rem;
-  padding-left: unset;
-  margin-left: 0.75rem;
-  margin-right: -1.75rem;
-}
-
-/* styles for Persian language */
-body:lang(fa) article,
-body:lang(fa) header > h1 {
-  font-family: 'Vazir';
-}
-/* styles for Arabic language */
-body:lang(ar) article,
-body:lang(ar) header > h1 {
-  font-family: 'Cairo', sans-serif;
-}
-
-body:lang(ko) header,
-body:lang(ko) article {
-  word-break: keep-all;
+  --code-area-bg: var(--inlineCode-bg);
+  --code-area-color: #d4d4d4;
+  --line-highlight-bg: #add6ff26;
+  --line-highlight-flag: var(--blue);
+  --comment-color: #a19b8f;
+  --string-color: #f1eadc;
+  --variable-color: #77bff7;
+  --keyword-color: #eb7e81;
+  --classname-color: #bb97e7;
+  --tag-color: #66b5f6;
 }
 
 /**
@@ -66,7 +54,7 @@ body:lang(ko) article {
  */
 code[class*='language-'],
 pre[class*='language-'] {
-  color: white;
+  color: var(--code-area-color);
   background: none;
   font-family: Fira Code, Consolas, Menlo, Monaco, source-code-pro, Courier New,
     monospace;
@@ -127,37 +115,26 @@ pre[class*='language-'] ::selection {
   white-space: normal;
 }
 
-.token.attr-name {
-  color: rgb(173, 219, 103);
-  font-style: italic;
-}
-
 .token.comment {
-  color: rgb(128, 147, 147);
+  color: var(--comment-color);
 }
 
 .token.string,
 .token.url {
-  color: rgb(173, 219, 103);
+  color: var(--string-color);
 }
 
-.token.variable {
-  color: rgb(214, 222, 235);
-}
-
-.token.number {
-  color: rgb(247, 140, 108);
-}
-
+.token.variable,
+.token.number,
 .token.builtin,
 .token.char,
 .token.constant,
-.token.function {
-  color: rgb(130, 170, 255);
+.token.boolean {
+  color: var(--variable-color);
 }
 
 .token.punctuation {
-  color: rgb(199, 146, 234);
+  color: var(--code-area-color);
 }
 
 .token.selector,
@@ -166,26 +143,21 @@ pre[class*='language-'] ::selection {
   font-style: 'italic';
 }
 
-.token.class-name {
-  color: rgb(255, 203, 139);
+.token.property,
+.token.namespace,
+.token.class-name,
+.token.function,
+.token.attr-name {
+  color: var(--classname-color);
 }
 
-.token.tag,
+.token.tag {
+  color: var(--tag-color);
+}
+
 .token.operator,
 .token.keyword {
-  color: #639cd9;
-}
-
-.token.boolean {
-  color: rgb(255, 88, 116);
-}
-
-.token.property {
-  color: rgb(128, 203, 196);
-}
-
-.token.namespace {
-  color: rgb(178, 204, 214);
+  color: var(--keyword-color);
 }
 
 pre[data-line] {
@@ -194,13 +166,13 @@ pre[data-line] {
 }
 
 .gatsby-highlight-code-line {
-  background-color: hsla(207, 95%, 15%, 1);
+  background-color: var(--line-highlight-bg);
   display: block;
   margin-right: -1.3125rem;
   margin-left: -1.3125rem;
   padding-right: 1em;
   padding-left: 1.25em;
-  border-left: 0.25em solid #639cd9;
+  border-left: 0.25em solid var(--line-highlight-flag);
 }
 
 .gatsby-highlight {
@@ -208,7 +180,7 @@ pre[data-line] {
   margin-left: -1.3125rem;
   margin-right: -1.3125rem;
   border-radius: 10px;
-  background: #011627;
+  background: var(--code-area-bg);
   -webkit-overflow-scrolling: touch;
   overflow: auto;
 }

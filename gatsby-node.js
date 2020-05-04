@@ -33,7 +33,7 @@ exports.createPages = ({ graphql, actions }) => {
     const blogPost = path.resolve('./src/templates/blog-post.js');
 
     // Create index pages for all supported languages
-    Object.keys(supportedLanguages).forEach(langKey => {
+    Object.keys(supportedLanguages).forEach((langKey) => {
       createPage({
         path: langKey === 'en' ? '/' : `/${langKey}/`,
         component: path.resolve('./src/templates/blog-index.js'),
@@ -66,7 +66,7 @@ exports.createPages = ({ graphql, actions }) => {
             }
           }
         `
-      ).then(result => {
+      ).then((result) => {
         if (result.errors) {
           console.log(result.errors);
           reject(result.errors);
@@ -130,7 +130,7 @@ exports.createPages = ({ graphql, actions }) => {
           const otherLangPosts = posts.filter(
             ({ node }) => node.fields.langKey !== 'en'
           );
-          _.each(otherLangPosts, post => {
+          _.each(otherLangPosts, (post) => {
             const translations =
               translationsByDirectory[_.get(post, 'node.fields.directoryName')];
 
