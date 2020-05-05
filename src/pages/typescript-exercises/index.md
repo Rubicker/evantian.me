@@ -232,3 +232,15 @@ function swap<T1, T2>(v1: T1, v2: T2): [T2, T1] {
   return [v2, v1]
 }
 ```
+
+## exercise-07
+
+[source address](https://github.com/mdevils/typescript-exercises/blob/master/exercises/exercise-07/index.ts)
+
+To type PowerUser, we need to combine Admin and User except property 'type', then add its own 'type':
+
+```ts
+type PowerUser = Omit<Admin & User, 'type'> & {
+  type: 'powerUser';
+}
+```
