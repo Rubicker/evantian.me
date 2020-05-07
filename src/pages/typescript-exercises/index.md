@@ -14,7 +14,7 @@ Recently, I found a [repository](https://github.com/mdevils/typescript-exercises
 
 [source address](https://github.com/mdevils/typescript-exercises/blob/master/exercises/exercise-00/index.ts)
 
-This one is pretty easy, all we need to do is define an interface `User` and use it:
+This one is pretty easy, all we need to do is defining an interface `User`:
 
 ```ts{1-5}
 interface User {
@@ -24,16 +24,7 @@ interface User {
 }
 
 const users: User[] = [
-  {
-    name: 'Max Mustermann',
-    age: 25,
-    occupation: 'Chimney sweep'
-  },
-  {
-    name: 'Kate Müller',
-    age: 23,
-    occupation: 'Astronaut'
-  }
+  // ...
 ]
 
 function logPerson(user: User) {
@@ -72,7 +63,7 @@ function logPerson(person: Person) {
 
 > [Advanced Types - union types](https://www.typescriptlang.org/docs/handbook/advanced-types.html#union-types)
 
-And union types is a very powerful feature that TypeScript offers. Consider this:
+Union types is a very powerful feature. Consider this:
 
 ```ts
 function isAdmin(person: User | Admin): boolean {
@@ -162,7 +153,7 @@ function logPerson(person: Person) {
 
 [source address](https://github.com/mdevils/typescript-exercises/blob/master/exercises/exercise-04/index.ts)
 
-This task asks us to type arguements of filterUsers, `criteria` has some values of `Users`, `Partial<T>` is what we want:
+This task asks us to type arguements of filterUsers, `criteria` has some values of `Users`, so `Partial<T>` is what we want:
 
 ```ts
 type Partial<T> = {
