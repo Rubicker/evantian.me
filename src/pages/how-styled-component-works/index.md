@@ -194,21 +194,347 @@ const Button = styled.button`
 <Button width={30} /> 
 ```
 
+Ok, let's go back to `StyledComponent`, what features does this constructor bring in?
+
+Break down this into several parts:
+
+**`generateId`**
+
+Like we talk before, `flatten` need an unique ID to identify if it encounter a component. `generateId` can help us for this.
+
+```js
+const identifiers = {};
+
+function generateId(displayName, parentComponentId) {
+  const name = typeof displayName !== 'string' 
+    ? 'sc' 
+    : escape(displayName);
+  // Ensure that no displayName can lead to duplicate componentIds
+  identifiers[name] = (identifiers[name] || 0) + 1;
+
+  // generateComponentId actually return the hash value of the argument 
+  // check it at utils/genetateComponentId.js
+  const componentId = `${name}-${
+    generateComponentId(name + identifiers[name])
+  }`;
+  return parentComponentId 
+    ? `${parentComponentId}-${componentId}` 
+    : componentId;
+}
+```
+
+**`useResolvedAttrs`**
+
+`useResolvedAttrs` is a React Hook used to calculate attrs at runtime under context(theme and pass-in props)
+
+```js
+function useResolvedAttrs(theme = EMPTY_OBJECT, props, attrs) {
+  // returns [context, resolvedAttrs]
+  // where resolvedAttrs is only the things 
+  // injected by the attrs themselves
+  const context = { ...props, theme };
+  const resolvedAttrs = {};
+
+  attrs.forEach(attrDef => {
+    let resolvedAttrDef = attrDef;
+    let key;
+
+    if (isFunction(resolvedAttrDef)) {
+      resolvedAttrDef = resolvedAttrDef(context);
+    }
+
+    for (key in resolvedAttrDef) {
+      context[key] = resolvedAttrs[key] =
+        key === 'className'
+          ? joinStrings(resolvedAttrs[key], resolvedAttrDef[key])
+          : resolvedAttrDef[key];
+    }
+  });
+
+  return [context, resolvedAttrs];
+}
+
+```
+
+**`useInjectedStyle`** 
+
+This React hook help us to get a specific className for this component's style.
+
+```js
+function useInjectedStyle(
+  componentStyle,
+  hasAttrs,
+  resolvedAttrs,
+  warnTooManyClasses?
+) {
+  const styleSheet = useStyleSheet();
+  const stylis = useStylis();
+
+  // statically styled-components don't need to 
+  // build an execution context object,
+  // and shouldn't be increasing the number of class names
+  const isStatic = componentStyle.isStatic && !hasAttrs;
+
+  const className = isStatic
+    ? componentStyle
+        .generateAndInjectStyles(EMPTY_OBJECT, styleSheet, stylis)
+    : componentStyle
+        .generateAndInjectStyles(resolvedAttrs, styleSheet, stylis);
+
+  useDebugValue(className);
+
+  if (process.env.NODE_ENV !== 'production' 
+    && !isStatic
+    && warnTooManyClasses
+  ) {
+    warnTooManyClasses(className);
+  }
+
+  return className;
+}
+```
+
+> [stylis](https://github.com/thysultan/stylis.js)
 
 
+**`useStyledComponentImpl`**
 
+This react hook returns a styledComponent, which pass props as context to ComponentStyle at rendering and then create a className.
 
+```js
+function useStyledComponentImpl(
+  forwardedComponent,
+  props,
+  forwardedRef
+) {
+  const {
+    attrs,
+    componentStyle,
+    defaultProps,
+    foldedComponentIds,
+    shouldForwardProp,
+    styledComponentId,
+    target,
+  } = forwardedComponent;
 
+  useDebugValue(styledComponentId);
 
+  const theme = 
+    determineTheme(props, useContext(ThemeContext), defaultProps);
 
+  const [context, attrs] = 
+    useResolvedAttrs(theme || EMPTY_OBJECT, props, componentAttrs);
 
+  const generatedClassName = useInjectedStyle(
+    componentStyle,
+    componentAttrs.length > 0,
+    context,
+    process.env.NODE_ENV !== 'production' 
+      ? forwardedComponent.warnTooManyClasses 
+      : undefined
+  );
 
+  const refToForward = forwardedRef;
 
+  const elementToBeCreated: Target = 
+    attrs.$as || props.$as || attrs.as || props.as || target;
 
+  const isTargetTag = isTag(elementToBeCreated);
+  const computedProps = attrs !== props ? { ...props, ...attrs } : props;
+  const propFilterFn = shouldForwardProp || (isTargetTag && validAttr);
+  const propsForElement = {};
 
+  for (const key in computedProps) {
+    if (key[0] === '$' || key === 'as') continue;
+    else if (key === 'forwardedAs') {
+      propsForElement.as = computedProps[key];
+    } else if (!propFilterFn || propFilterFn(key, validAttr)) {
+      // Don't pass through non HTML tags through to HTML elements
+      propsForElement[key] = computedProps[key];
+    }
+  }
 
+  if (props.style && attrs.style !== props.style) {
+    propsForElement.style = { ...props.style, ...attrs.style };
+  }
 
+  propsForElement.className = Array.prototype
+    .concat(
+      foldedComponentIds,
+      styledComponentId,
+      generatedClassName !== styledComponentId ? generatedClassName : null,
+      props.className,
+      attrs.className
+    )
+    .filter(Boolean)
+    .join(' ');
 
+  propsForElement.ref = refToForward;
 
+  return createElement(elementToBeCreated, propsForElement);
+}
 
+```
+
+**`createStyledComponent`**
+
+This HOC packages our styledComponent:
+
+```js
+export default function createStyledComponent(
+  target,
+  options,
+  rules
+) {
+  const isTargetStyledComp = isStyledComponent(target);
+  const isCompositeComponent = !isTag(target);
+
+  const {
+    displayName = generateDisplayName(target),
+    componentId = generateId(
+      options.displayName, 
+      options.parentComponentId
+    ),
+    attrs = EMPTY_ARRAY,
+  } = options;
+
+  const styledComponentId =
+    options.displayName && options.componentId
+      ? `${escape(options.displayName)}-${options.componentId}`
+      : options.componentId || componentId;
+
+  // fold the underlying StyledComponent attrs up (implicit extend)
+  const finalAttrs =
+    isTargetStyledComp && target.attrs
+      ? Array.prototype.concat(target.attrs, attrs).filter(Boolean)
+      : attrs;
+
+  let shouldForwardProp = options.shouldForwardProp;
+
+  if (isTargetStyledComp && target.shouldForwardProp) {
+    if (shouldForwardProp) {
+      // compose nested shouldForwardProp calls
+      shouldForwardProp = (prop, filterFn) =>
+        target.shouldForwardProp(prop, filterFn) 
+        && options.shouldForwardProp(prop, filterFn);
+    } else {
+      shouldForwardProp = target.shouldForwardProp;
+    }
+  }
+
+  const componentStyle = new ComponentStyle(
+    isTargetStyledComp
+      ? // fold the underlying StyledComponent rules up (implicit extend)
+        target.componentStyle.rules.concat(rules)
+      : rules,
+    styledComponentId
+  );
+
+  /**
+   * forwardRef creates a new interim component, 
+   * which we'll take advantage of instead of 
+   * extending ParentComponent to create _another_ interim class
+   */
+  let WrappedStyledComponent;
+
+  const forwardRef = (props, ref) => 
+    useStyledComponentImpl(WrappedStyledComponent, props, ref);
+
+  forwardRef.displayName = displayName;
+
+  // this is a forced cast to merge it StyledComponentWrapperProperties
+  WrappedStyledComponent = React.forwardRef(forwardRef);
+
+  WrappedStyledComponent.attrs = finalAttrs;
+  WrappedStyledComponent.componentStyle = componentStyle;
+  WrappedStyledComponent.displayName = displayName;
+  WrappedStyledComponent.shouldForwardProp = shouldForwardProp;
+
+  // this static is used to preserve the cascade of static classes 
+  // for component selector purposes; 
+  // this is especially important with usage of the css prop
+  WrappedStyledComponent.foldedComponentIds = isTargetStyledComp
+    ? Array.prototype.concat(
+        target.foldedComponentIds, 
+        target.styledComponentId
+      )
+    : EMPTY_ARRAY;
+
+  WrappedStyledComponent.styledComponentId = styledComponentId;
+
+  // fold the underlying StyledComponent 
+  // target up since we folded the styles
+  WrappedStyledComponent.target = isTargetStyledComp
+    ? target.target
+    : target;
+
+  WrappedStyledComponent.withComponent = function withComponent(tag) {
+    const { componentId: previousComponentId, ...optionsToCopy } = options;
+
+    const newComponentId =
+      previousComponentId &&
+      `${previousComponentId}-${
+        isTag(tag) 
+          ? tag 
+          : escape(getComponentName(tag))
+      }`;
+
+    const newOptions = {
+      ...optionsToCopy,
+      attrs: finalAttrs,
+      componentId: newComponentId,
+    };
+
+    return createStyledComponent(tag, newOptions, rules);
+  };
+
+  Object.defineProperty(WrappedStyledComponent, 'defaultProps', {
+    get() {
+      return this._foldedDefaultProps;
+    },
+
+    set(obj) {
+      this._foldedDefaultProps = isTargetStyledComp 
+        ? merge({}, target.defaultProps, obj) 
+        : obj;
+    },
+  });
+
+  if (process.env.NODE_ENV !== 'production') {
+    checkDynamicCreation(displayName, styledComponentId);
+
+    WrappedStyledComponent.warnTooManyClasses = createWarnTooManyClasses(
+      displayName,
+      styledComponentId
+    );
+  }
+
+  WrappedStyledComponent.toString = () => 
+    `.${WrappedStyledComponent.styledComponentId}`;
+
+  if (isCompositeComponent) {
+    hoist(WrappedStyledComponent, (target: any), {
+      // all SC-specific things should not be hoisted
+      attrs: true,
+      componentStyle: true,
+      displayName: true,
+      foldedComponentIds: true,
+      shouldForwardProp: true,
+      self: true,
+      styledComponentId: true,
+      target: true,
+      withComponent: true,
+    });
+  }
+
+  return WrappedStyledComponent;
+}
+```
+
+> [React-official docs - Static Methos Must Be Copied Over](https://reactjs.org/docs/higher-order-components.html#static-methods-must-be-copied-over)
+>
+> [hoist-non-react-statics](https://www.npmjs.com/package/hoist-non-react-statics)
+>
 > [The magic behind 💅 styled-components](https://mxstbr.blog/2016/11/styled-components-magic-explained/)
+> 
+> [深入浅出 标签模板字符串 和 💅styled-components 💅](https://juejin.im/post/5cf23f35e51d45598611b911)
