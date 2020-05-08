@@ -15,7 +15,7 @@ const Button = styled.button`
 Let's walk through [the repo of styled-component](https://github.com/styled-components/styled-components) and learn something from it!
 
 
-Note: to make things clear and easy to understand, I'll skip some unneccesary code that not related this article like code about React-Native, SSR and Babel plugins etc.
+Note: to make things easier to understand, I'll skip some unneccesary code that not related this article like code about React-Native, SSR and Babel plugins etc.
 
 
 Start from styled constructor:
@@ -59,7 +59,7 @@ export default function constructWithOptions(
 }
 ```
 
-`css` function is the key thing `styled-component` used to take care of `template string`, let's see the implementation of it:
+`css` function is the key thing that `styled-component` used to take care of `template string`, let's see the implementation of it:
 
 ```js
 // packages/styled-components/src/constructors/css.js
@@ -160,7 +160,7 @@ export default function flatten(chunk, executionContext, styleSheet) {
 }
 ```
 
-We can see, `flatten` help us to concat css styles as an array, it will transfer styledComponent to a className and deal with keyframes. In the end, there will be only static strings and functions left.
+From above code, `flatten` help us to concat css styles as an array, it will transfer styledComponent to a className and deal with keyframes. In the end, there will be only static strings and functions left.
 
 ```js
 const Link = styled.a`
