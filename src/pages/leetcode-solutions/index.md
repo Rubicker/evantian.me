@@ -118,3 +118,120 @@ const addTwoNumbers = (l1, l2) => {
   return root.next
 };
 ```
+
+
+
+## Hashtable
+
+### [1424. Diagonal Traverse II](https://leetcode.com/problems/diagonal-traverse-ii/)
+
+```js
+/*
+ *  Algorithm:
+ *  1. insert all diagonals elements into the same position of an array
+ *      eg. nums[i][0], nums[i-1][1],...nums[0][i] into m[i]
+ *  2. flatten m and output  
+ *  Time complexity: O(n)
+ *  Space Complexity: O(n)
+ */
+const findDiagonalOrder = nums => {  
+  let m = []
+  
+  nums.forEach((row, i) => {
+    row.forEach((num, j) => {
+      if (i + j >= m.length) m.push([])
+      m[i + j].unshift(num)
+    })
+  })
+  
+  return m.flat(1);
+};
+```
+
+```py
+class Solution:
+  def findDiagonalOrder(self, nums: List[List[int]]) -> List[int]:
+    m = []
+
+    for i, row in enumerate(nums):
+      for j, v in enumerate(row):
+        if i + j >= len(m): m.append([])
+        m[i + j].append(v)
+
+    return [v for d in m for v in reversed(d)]
+```
+
+### [1371. Find the Longest Substring Containing Vowels in Even Counts](https://leetcode.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/)
+
+Use a hashtable to store the first index of a given state. If the same state occurs again(i -> j), which means we found a subarray (i + 1 -> j) that all vowels occur even times. Length = j - (i + 1) + 1 = j - i
+
+```py
+# prefix sum => prefix freq: 
+# whether each vowel occurs evan(0) or odd(1) time(s)
+# when a vowel occurs we just flip the bit
+# e.g. 01110 = uoiea(o, i, e even times) => i => 01010(o, e even times)
+#
+# Time complexity: O(n)
+# Space complexity: O(32) => 2**5
+
+class Solution:
+  def findTheLongestSubstring(self, s: str) -> int:
+    idx = { 0 : -1 }
+    vowels = 'aeiou'
+    state = 0
+    ans = 0
+    
+    for i in range(len(s)):
+      j = vowels.find(s[i])
+      if j >= 0: state ^= 1 << j
+      if state not in idx:
+        idx[state] = i
+      ans = max(ans, i - idx[state])
+    
+    return ans
+```
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+const findTheLongestSubstring = s =>  {
+  let idx = { 0: -1 }
+  const vowels = 'aeiou'
+  let state = 0
+  let max = 0
+  
+  for (let i = 0; i < s.length; i++) {
+    let j = vowels.indexOf(s[i])
+    if (j > -1) {
+      state ^= 1 << j
+    } 
+    if (!(state in idx)) {
+      idx[state] = i
+    }
+    max = Math.max(max, i - idx[state])
+  }
+  
+  return max
+};
+```
+
+### [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/)
+
+```py
+class Solution:
+  def lengthOfLongestSubstring(self, s: str) -> int:
+    used = {}
+    max_length = start = 0
+    for i, c in enumerate(s):
+      if c in used and start <= used[c]:
+        start = used[c] + 1
+      else: max_length = max(max_length, i - start + 1)
+        
+      used[c] = i
+      
+    return max_length
+```
+
+> [How to Solve Sliding Window Problems](https://medium.com/outco/how-to-solve-sliding-window-problems-28d67601a66)
