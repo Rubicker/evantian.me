@@ -1,6 +1,6 @@
 ---
 
-title: Hooks, Tiny but powerful
+title: Hooks, tiny but powerful
 
 date: '2020-07-29'
 
