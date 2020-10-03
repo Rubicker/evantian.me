@@ -1,6 +1,6 @@
 ---
 
-title: React Internals, Part One-Overview
+title: React Internals Part One Overview
 
 date: '2020-10-03'
 
@@ -181,3 +181,132 @@ if (ctor.prototype && ctor.prototype.isPureReactComponent) {
   React.createElement('p', {className: 'text'}, 'hello world')
   ```
   
+So now we have a basic understanding of React APIs, let's get back to the original topic: `React.createElement`. If you have a sharp eye, you probably notice that the `createElement` exported by [_**/packages/react/src/React.js**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/React.js?utm_source=share#L63:33) can be different depending on the environment variables:
+
+```js
+const createElement = __DEV__ 
+  ? createElementWithValidation 
+  : createElementProd
+```
+
+As the name implies, if your code is in a development environment, the `createElement` will do some additional checks on the given parameters, such as `type` etc. To make this part easy to read, let's just interpret production version `createElement`, which is `createElementProd` in the above code.
+
+According to the entry file, we can find the code for the `createElement` located at [_**packages/react/src/ReactElement.js**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/ReactElement.js?utm_source=share#L348:17), which can be roughly divided into three sections:
+
+- Gather component props from the second argument `config` as a new object named `props`, excluding the four special properties(`RESERVED_PROPS`) `key`, `ref`, `self`, and `source` (these are handled separately and will be passed directly to the next function `ReactElement`).
+  
+```js
+//...
+let propName;
+
+const props = {};
+
+let key = null;
+let ref = null;
+let self = null;
+let source = null;
+
+if (config != null) {
+  if (hasValidRef(config)) {
+    ref = config.ref;
+
+    if (__DEV__) {
+      warnIfStringRefCannotBeAutoConverted(config);
+    }
+  }
+  if (hasValidKey(config)) {
+    key = '' + config.key;
+  }
+
+  self = config.__self === undefined ? null : config.__self;
+  source = config.__source === undefined ? null : config.__source;
+
+  for (propName in config) {
+    if (
+      hasOwnProperty.call(config, propName) &&
+      !RESERVED_PROPS.hasOwnProperty(propName)
+    ) {
+      props[propName] = config[propName];
+    }
+  }
+}
+//...
+```
+- Handle the `children` prop(The third and subsequent parameters are all children prop)
+
+```js
+const childrenLength = arguments.length - 2;
+if (childrenLength === 1) {
+  props.children = children;
+} else if (childrenLength > 1) {
+  const childArray = Array(childrenLength);
+  for (let i = 0; i < childrenLength; i++) {
+    childArray[i] = arguments[i + 2];
+  }
+  if (__DEV__) {
+    if (Object.freeze) {
+      Object.freeze(childArray);
+    }
+  }
+  props.children = childArray;
+}
+```
+- Handle `defaultProps`
+
+```js
+if (type && type.defaultProps) {
+  const defaultProps = type.defaultProps;
+  for (propName in defaultProps) {
+    if (props[propName] === undefined) {
+      props[propName] = defaultProps[propName];
+    }
+  }
+}
+```
+
+In the end, `createElement` just pass all of these into `ReactElement` funtion.
+
+```js
+return ReactElement(
+  type,
+  key,
+  ref,
+  self,
+  source,
+  ReactCurrentOwner.current,
+  props,
+);
+```
+So what did `ReactElement` do with these parameters? 
+
+The answer is really simple. `ReactElement` simply returns an object containing all the parameters except `self` and `source`, with an additional property `$$typeof` with a value of `REACT_ELEMENT_TYPE`:
+
+```js
+const ReactElement = function(type, key, ref, self, source, owner, props) {
+  const element = {
+    // This tag allows us to uniquely identify this as a React Element
+    $$typeof: REACT_ELEMENT_TYPE,
+
+    // Built-in properties that belong on the element
+    type: type,
+    key: key,
+    ref: ref,
+    props: props,
+
+    // Record the component responsible for creating this element.
+    _owner: owner,
+  };
+
+  // omit the dev code
+
+  return element;
+
+}
+```
+
+So this is it. In short, `createElement` creates an element object for us, which contains some key attributes such as `$$typeof`, `type`, `props`, `key`, `ref` and so on. As for what this object is used for and how it helps to update the React Dom, I'll explain that later.
+
+Further reading:
+> [Why Do React Elements Have a $$typeof Property? by Dan Abramov](https://overreacted.io/why-do-react-elements-have-typeof-property/)
+
+> [RFC: createElement changes and surrounding deprecations](https://github.com/reactjs/rfcs/pull/107)
