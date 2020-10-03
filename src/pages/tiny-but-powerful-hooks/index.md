@@ -56,7 +56,7 @@ const useInterval = (
     savedCallback.current = callback
   }, [callback])
 
-  // this savedCallback can be persisi across the re-renders with ref
+  // this savedCallback can be persist across the re-renders with ref
   useEffect(() => {
     if (delay !== null) {
       const id = setInterval(() => savedCallback.current(), delay)
