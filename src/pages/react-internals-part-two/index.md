@@ -93,7 +93,7 @@ Object.assign(pureComponentPrototype, Component.prototype);
 pureComponentPrototype.isPureReactComponent = true;
 ```
 
-In order to understand the relationship between `PureComponent` and `Component`, let's briefly review inheritance in JavaScript:
+In order to understand the relationship between `PureComponent` and `Component`, let's briefly review inheritance in JavaScript(this part relys heavily on [Professional JavaScript for Web Developers 4th Edition](https://www.amazon.com/Professional-JavaScript-Developers-Matt-Frisbie/dp/1119366445/ref=pd_sbs_14_1/143-1717190-7644662?_encoding=UTF8&pd_rd_i=1119366445&pd_rd_r=0c8f661d-5bce-4c65-9d45-351df79c013e&pd_rd_w=889l7&pd_rd_wg=YsQpd&pf_rd_p=b65ee94e-1282-43fc-a8b1-8bf931f6dfab&pf_rd_r=21TN0J1M6BXM8PGDNFSF&psc=1&refRID=21TN0J1M6BXM8PGDNFSF)):
 
 1. Prototype Chaining
 
