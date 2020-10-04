@@ -14,7 +14,7 @@ Here are some notes I took while learning React source code.
 
 **Note1**: I will focus on the contents of the [_**packages**_](https://sourcegraph.com/github.com/facebook/react/-/tree/packages) folder, rather than the overall architecture.
 
-**Note2**: My analysis process will rely heavily on the sourcegraph plugin, which you can download from [here](https://docs.sourcegraph.com/integration/browser_extension). Also I'll post sourcegraph links to the code as I analyze it so you can find it.
+**Note2**: My analysis process will rely heavily on the sourcegraph plugin, which you can download from [_**here**_](https://docs.sourcegraph.com/integration/browser_extension). Also I'll post sourcegraph links of the code as I analyze it in case you want to follow with me.
 
 **Note3**: This article will be updated as the official React repository is updated, at this time of writing React version is _**16.13.1**_.
 
@@ -25,7 +25,7 @@ I guess this API is the most familiar and yet the strangest one.
 
 Most of us don't need to call this API directly when we're developing, but it plays an essential role in helping us convert JSX into react components.
 
-To unravel its mysteries, let's get hands dirty from [__packages/react/src/React.js__](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/React.js?utm_source=share#L37):
+To unravel its mysteries, let's get hands dirty from [_**packages/react/src/React.js**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/React.js?utm_source=share#L37):
 
 ```js
 // Remove all the import declarations for simplicity
@@ -105,8 +105,8 @@ We can see that this file exists as an API export. Here I'll pick some common AP
 
   You can explore more through links below:
 
-  - [Official documentation: React.Children](https://reactjs.org/docs/react-api.html#reactchildren)
-  - [A deep dive into children in React by max stoiber](https://mxstbr.blog/2017/02/react-children-deepdive/#enforcing-a-single-child)
+  - [_**Official documentation: React.Children**_](https://reactjs.org/docs/react-api.html#reactchildren)
+  - [_**A deep dive into children in React by max stoiber**_](https://mxstbr.blog/2017/02/react-children-deepdive/#enforcing-a-single-child)
 
 - `createRef`
   
@@ -115,8 +115,8 @@ We can see that this file exists as an API export. Here I'll pick some common AP
 
   You can explore more through links below(and findout why stringRef is legacy):
 
-  - [Official documentation: Refs and the DOM](https://reactjs.org/docs/refs-and-the-dom.html)
-  - [Implement Better Refs API ](https://github.com/facebook/react/issues/1373)
+  - [_**Official documentation: Refs and the DOM**_](https://reactjs.org/docs/refs-and-the-dom.html)
+  - [_**Implement Better Refs API**_](https://github.com/facebook/react/issues/1373)
 
 ```js
 // in class component
@@ -152,19 +152,19 @@ if (ctor.prototype && ctor.prototype.isPureReactComponent) {
   );
 }
 ```
-  check [here](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react-reconciler/src/ReactFiberClassComponent.new.js?utm_source=share#L335)
+  check [_**here**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react-reconciler/src/ReactFiberClassComponent.new.js?utm_source=share#L335) for the source code.
   
 - `createContext`
 
   You can explore more through links below:
-  - [Official documentation: React.createContext](https://reactjs.org/docs/context.html#reactcreatecontext)
-  - [How to use React Context effectively](https://kentcdodds.com/blog/how-to-use-react-context-effectively)
+  - [_**Official documentation: React.createContext**_](https://reactjs.org/docs/context.html#reactcreatecontext)
+  - [_**How to use React Context effectively**_](https://kentcdodds.com/blog/how-to-use-react-context-effectively)
 
 - `fowardRef`
  
   Sometimes we may need to pass a ref through a component to its children. This is exacly where `fowardRef` shines.
 
-  - [Official documentation: Fowarding Refs](https://reactjs.org/docs/forwarding-refs.html)
+  - [_**Official documentation: Fowarding Refs**_](https://reactjs.org/docs/forwarding-refs.html)
   
 - `useXXX` hooks
   
@@ -181,7 +181,7 @@ if (ctor.prototype && ctor.prototype.isPureReactComponent) {
   React.createElement('p', {className: 'text'}, 'hello world')
   ```
   
-So now we have a basic understanding of React APIs, let's get back to the original topic: `React.createElement`. If you have a sharp eye, you probably notice that the `createElement` exported by [_**/packages/react/src/React.js**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/React.js?utm_source=share#L63:33) can be different depending on the environment variables:
+So now we have a basic understanding of React APIs, let's get back to the original topic: `React.createElement`. If you have a sharp eye, you probably noticed that the `createElement` exported by [_**packages/react/src/React.js**_](https://sourcegraph.com/github.com/facebook/react/-/blob/packages/react/src/React.js?utm_source=share#L63:33) can be different depending on the environment variables:
 
 ```js
 const createElement = __DEV__ 
