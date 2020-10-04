@@ -19,6 +19,7 @@ Here are some notes I took while learning React source code.
 **Note3**: This article will be updated as the official React repository is updated, at this time of writing React version is _**16.13.1**_.
 
 
+***
 ## ReactElement
 
 I guess this API is the most familiar and yet the strangest one. 
@@ -307,6 +308,7 @@ const ReactElement = function(type, key, ref, self, source, owner, props) {
 So this is it. In short, `createElement` creates an element object for us, which contains some key attributes such as `$$typeof`, `type`, `props`, `key`, `ref` and so on. As for what this object is used for and how it helps to update the React Dom, I'll explain that later.
 
 Further reading:
+---
 > [Why Do React Elements Have a $$typeof Property? by Dan Abramov](https://overreacted.io/why-do-react-elements-have-typeof-property/)
 
 > [RFC: createElement changes and surrounding deprecations](https://github.com/reactjs/rfcs/pull/107)
