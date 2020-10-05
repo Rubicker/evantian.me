@@ -1,6 +1,6 @@
 ---
 
-title: React Internals Part Three CreateRef
+title: React Internals Part Three Refs
 
 date: '2020-10-05'
 
@@ -112,7 +112,68 @@ Just hold on, how it can hold an immutable value during lifecycle will be covere
 
 #### FowardRef
 
-It's ok to use `ref` attribute inside a functional component as long as you refer to a DOM element or a class component, but it can't be used on functional components because they don't have instances... until React support `fowardRef`.
+It's ok to use `ref` attribute **inside** a functional component as long as you refer to a DOM element or a class component, but it can't be used **on** functional components because they don't have instances... 
+
+```js
+const MyFunctionalComponent = () => <p>hello I'm functional component</p>
+
+class ComponentA extends React.component {
+  constructor() {
+    this.funcRef = createRef()
+  }
+  render() {
+    return (
+      // 🚨 this will not work!
+      // Function components cannot be given refs. 
+      // Attempts to access this ref will fail.
+      <MyFunctionalComponent ref={this.funcRef}>
+    )
+  }
+}
+```
+
+
+Until React offers an API called `fowardRef`:
+
+```js
+const MyFunctionalComponent = React.forwardRef((props, ref) => (
+  <p ref={ref}>hello I'm functional component</p>
+));
+```
+
+The implemantation is as simple as `createRef`:
+```js
+export function forwardRef<Props, ElementType: React$ElementType>(
+  render: (props: Props, ref: React$Ref<ElementType>) => React$Node,
+) {
+  const elementType = {
+    $$typeof: REACT_FORWARD_REF_TYPE,
+    render,
+  };
+
+  return elementType;
+}
+
+```
+
+We can see that `forwardRef` actually return a type, take the above function component `<MyFunctionalComponent ref={this.funcRef}>` as an example, after being compiled by `React.createElement`, it will throw out an object like this:
+
+```js
+{
+  $$typeof: REACT_ELEMENT_TYPE,
+  type: {
+    $$typeof: REACT_FIBER_REF_TYPE,
+    render: (props, ref) => 
+      <p ref={ref}>hello I'm functional component</p>
+  },
+  key: null,
+  ref: this.funcRef,
+  props: {},
+  ...
+}
+```
 
 Further reading:
 ---
+
+>  [Forwarding Refs](https://reactjs.org/docs/forwarding-refs.html)
