@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { rhythm } from '../utils/typography';
 
 class Footer extends React.Component {
@@ -17,7 +16,7 @@ class Footer extends React.Component {
           </a>
         </div>
         <a
-          href="https://mobile.twitter.com/EvanTian15"
+          href="https://mobile.twitter.com/evantianx"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -25,7 +24,7 @@ class Footer extends React.Component {
         </a>{' '}
         &bull;{' '}
         <a
-          href="https://github.com/Rubicker"
+          href="https://github.com/evantianx"
           target="_blank"
           rel="noopener noreferrer"
         >

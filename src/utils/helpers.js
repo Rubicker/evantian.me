@@ -1,6 +1,5 @@
 export function formatReadingTime(minutes) {
   let cups = Math.round(minutes / 5);
-  let bowls = 0;
   if (cups > 5) {
     return `${new Array(Math.round(cups / Math.E))
       .fill('🍱')
@@ -11,7 +10,7 @@ export function formatReadingTime(minutes) {
 }
 
 // `lang` is optional and will default to the current user agent locale
-export function formatPostDate(date, lang) {
+export function formatPostDate(date, lang = 'en') {
   if (typeof Date.prototype.toLocaleDateString !== 'function') {
     return date;
   }

@@ -1,12 +1,11 @@
-import { Link, graphql } from 'gatsby';
-import { formatPostDate, formatReadingTime } from '../utils/helpers';
-
+import { graphql, Link } from 'gatsby';
+import get from 'lodash/get';
+import React from 'react';
 import Bio from '../components/Bio';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
-import React from 'react';
 import SEO from '../components/SEO';
-import get from 'lodash/get';
+import { formatPostDate, formatReadingTime } from '../utils/helpers';
 import { rhythm } from '../utils/typography';
 
 class BlogIndexTemplate extends React.Component {
@@ -64,17 +63,14 @@ class BlogIndexTemplate extends React.Component {
 export default BlogIndexTemplate;
 
 export const pageQuery = graphql`
-  query($langKey: String!) {
+  query {
     site {
       siteMetadata {
         title
         description
       }
     }
-    allMarkdownRemark(
-      filter: { fields: { langKey: { eq: $langKey } } }
-      sort: { fields: [frontmatter___date], order: DESC }
-    ) {
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {
           fields {

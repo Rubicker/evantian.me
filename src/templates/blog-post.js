@@ -6,11 +6,6 @@ import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import '../fonts/fonts-post.css';
 import { formatPostDate, formatReadingTime } from '../utils/helpers';
-import {
-  codeToLanguage,
-  createLanguageLink,
-  loadFontsForCode,
-} from '../utils/i18n';
 import { rhythm, scale } from '../utils/typography';
 
 const GITHUB_USERNAME = 'evantian';
@@ -20,50 +15,21 @@ class BlogPostTemplate extends React.Component {
   render() {
     const post = this.props.data.markdownRemark;
     const siteTitle = get(this.props, 'data.site.siteMetadata.title');
-    let {
-      previous,
-      next,
-      slug,
-      translations,
-      translatedLinks,
-    } = this.props.pageContext;
-    const lang = post.fields.langKey;
+    let { previous, next, slug } = this.props.pageContext;
 
-    // Replace original links with translated when available.
     let html = post.html;
-    translatedLinks.forEach((link) => {
-      // jeez
-      function escapeRegExp(str) {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      }
-      let translatedLink = '/' + lang + link;
-      html = html.replace(
-        new RegExp('"' + escapeRegExp(link) + '"', 'g'),
-        '"' + translatedLink + '"'
-      );
-    });
 
-    translations = translations.slice();
-    translations.sort((a, b) => {
-      return codeToLanguage(a) < codeToLanguage(b) ? -1 : 1;
-    });
-
-    loadFontsForCode(lang);
-    // TODO: this curried function is annoying
-    const languageLink = createLanguageLink(slug, lang);
-    const enSlug = languageLink('en');
-    const editUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/master/src/pages/${enSlug.slice(
+    const editUrl = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/master/src/pages/${slug.slice(
       1,
-      enSlug.length - 1
-    )}/index${lang === 'en' ? '' : '.' + lang}.md`;
+      slug.length - 1
+    )}/index.md`;
     const discussUrl = `https://mobile.twitter.com/search?q=${encodeURIComponent(
-      `https://evantian.com${enSlug}`
+      `https://evantian.com${slug}`
     )}`;
 
     return (
       <Layout location={this.props.location} title={siteTitle}>
         <SEO
-          lang={lang}
           title={post.frontmatter.title}
           description={post.frontmatter.spoiler}
           slug={post.fields.slug}
@@ -82,7 +48,7 @@ class BlogPostTemplate extends React.Component {
                   marginTop: rhythm(-4 / 5),
                 }}
               >
-                {formatPostDate(post.frontmatter.date, lang)}
+                {formatPostDate(post.frontmatter.date)}
                 {` • ${formatReadingTime(post.timeToRead)}`}
               </p>
             </header>
@@ -101,15 +67,6 @@ class BlogPostTemplate extends React.Component {
           </article>
         </main>
         <aside>
-          {/* TODO */}
-          {/* <div
-            style={{
-              margin: '90px 0 40px 0',
-              fontFamily: systemFont,
-            }}
-          >
-            <Signup />
-          </div> */}
           <h3
             style={{
               fontFamily: 'Montserrat,sans-serif',
@@ -185,7 +142,6 @@ export const pageQuery = graphql`
       }
       fields {
         slug
-        langKey
       }
     }
   }

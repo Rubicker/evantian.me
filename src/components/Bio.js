@@ -23,8 +23,8 @@ class Bio extends React.Component {
           }}
         />
         <p style={{ maxWidth: 310 }}>
-          Hi, I'm <a href="https://mobile.twitter.com/EvanTian15">Evan Tian</a>.
-          It is kind of fun to do the impossible.
+          Thoughts and writings by{' '}
+          <a href="https://github.com/evantianx">Evan Tian</a>
         </p>
       </div>
     );
