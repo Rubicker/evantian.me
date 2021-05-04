@@ -1,5 +1,5 @@
 {
-  "name": "evantian.me",
+  "name": "evantian.com",
   "private": true,
   "description": "Evantian's personal blog",
   "version": "1.0.0",
@@ -42,7 +42,7 @@
     "gh-pages": "^2.2.0",
     "prettier": "^2.0.5"
   },
-  "homepage": "https://evantian.me",
+  "homepage": "https://evantian.com",
   "license": "MIT",
   "scripts": {
     "dev": "gatsby develop",

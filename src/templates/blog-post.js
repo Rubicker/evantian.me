@@ -1,21 +1,20 @@
-import React from 'react';
-import { Link, graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import get from 'lodash/get';
-
-import '../fonts/fonts-post.css';
+import React from 'react';
 import Bio from '../components/Bio';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
+import '../fonts/fonts-post.css';
 import { formatPostDate, formatReadingTime } from '../utils/helpers';
-import { rhythm, scale } from '../utils/typography';
 import {
   codeToLanguage,
   createLanguageLink,
   loadFontsForCode,
 } from '../utils/i18n';
+import { rhythm, scale } from '../utils/typography';
 
-const GITHUB_USERNAME = 'Rubicker';
-const GITHUB_REPO_NAME = 'evantian.me';
+const GITHUB_USERNAME = 'evantian';
+const GITHUB_REPO_NAME = 'evantian.com';
 
 class BlogPostTemplate extends React.Component {
   render() {
@@ -58,7 +57,7 @@ class BlogPostTemplate extends React.Component {
       enSlug.length - 1
     )}/index${lang === 'en' ? '' : '.' + lang}.md`;
     const discussUrl = `https://mobile.twitter.com/search?q=${encodeURIComponent(
-      `https://evantian.me${enSlug}`
+      `https://evantian.com${enSlug}`
     )}`;
 
     return (
@@ -125,7 +124,7 @@ class BlogPostTemplate extends React.Component {
               }}
               to={'/'}
             >
-              evantian.me
+              evantian.com
             </Link>
           </h3>
           <Bio />

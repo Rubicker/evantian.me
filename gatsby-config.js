@@ -1,11 +1,11 @@
 module.exports = {
   siteMetadata: {
-    title: 'evantian.me',
+    title: 'evantian.com',
     author: 'Evan Tian',
     description: 'Personal blog by Evan Tian.',
-    siteUrl: 'https://evantian.me',
+    siteUrl: 'https://evantian.com',
     social: {
-      twitter: '@Evan Tian',
+      twitter: '@evantianx',
     },
   },
   pathPrefix: '/',
@@ -80,7 +80,7 @@ module.exports = {
               return allMarkdownRemark.edges.map((edge) => {
                 const siteUrl = site.siteMetadata.siteUrl;
                 const postText = `
-                <div style="margin-top=55px; font-style: italic;">(This is an article posted to my blog at evantian.me. You can read it online by <a href="${
+                <div style="margin-top=55px; font-style: italic;">(This is an article posted to my blog at evantian.com. You can read it online by <a href="${
                   siteUrl + edge.node.fields.slug
                 }">clicking here</a>.)</div>
               `;
@@ -134,7 +134,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `evantian.me`,
+        name: `evantian.com`,
         short_name: `evantian`,
         start_url: `/`,
         background_color: `#ffffff`,
