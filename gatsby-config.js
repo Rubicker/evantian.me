@@ -1,4 +1,7 @@
 module.exports = {
+  flags: {
+    FAST_DEV: true,
+  },
   siteMetadata: {
     title: 'evantian.com',
     author: 'Evan Tian',
